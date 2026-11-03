@@ -4,10 +4,12 @@
 # 02_analyse_donnees.R
 ####################################################################
 
+source("scripts/balance/01_formatage_donnees.R")
+
 ### Analyse generale de la forme des donnees
 # Construction du tableau de maillage
 taille_maillage <- data.frame(maillage = c("Temoin","55_mm","65_mm","75_mm"),
-                              taille_mm = c(35,55,65,75)) # Taille de la maille temoin : a confirmer ?
+                              taille_mm = c(35,55,65,75)) # Taille de la maille temoin
 # Effort de peche en nombre de calees par maillage par rapport au temoin
 rel.power <- n_calees$n[match(taille_maillage$maillage, n_calees$Maillage)]/n_calees$n[n_calees$Maillage == "Temoin"]
 
@@ -162,7 +164,7 @@ logi_75_pfixe_f$L50
 ### Verification, comparaison des modeles et representation graphique
 ## Modelisation logistique p estime / p fixe
 # Affectation des tableaux d'entree et resultats
-tab <- as.data.frame(captures_matrix_65)
+tab <- as.data.frame(captures_matrix_55)
 res_pfixe <- logi_55_pfixe
 res_pestime <- logi_55
 
@@ -268,3 +270,4 @@ wald(res_pfixe_m, res_pfixe_f, "L50") # Si p >= 0.05 : non-significatif
 # Test statistique Wilcoxon
 wilcox.test(Taille ~ Sexe, data = selectivite_crabe |> filter(!is.na(Sexe))) # Si p >= 0.05 : non-significatif
 tapply(selectivite_crabe$Taille, selectivite_crabe$Sexe, median)
+
