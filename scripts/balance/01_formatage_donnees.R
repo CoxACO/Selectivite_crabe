@@ -90,7 +90,7 @@ table(data_crabe$Balance_N, useNA = "ifany") # Certains N° balances NA
 table(data_crabe$Fiche, useNA = "ifany") # Aucunes fiches NA
 table(data_crabe$N_calee, useNA = "ifany") # Certains N° calee NA : a supprimer car impossible de reconstituer
 
-# Identifiant de calee
+# Identification des calees
 data_crabe <- data_crabe %>% mutate(ID_calee = paste(Date, Nom, N_calee, sep = "_"))
 
 # Separation des 2 bases uniformisees
