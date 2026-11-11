@@ -41,8 +41,10 @@ length(selectivite_crabe |> filter(premier_engin_sortie_de_peche_1 == "Treko71" 
 # length(selectivite_crabe |> filter(premier_engin_sortie_de_peche_1 == "Treko71" & taille_de_crabe >= 85) |> pull(taille_de_crabe))*100/1366
 
 ### Test statistique Wilcoxon
-wilcox.test(taille_de_crabe ~ premier_engin_sortie_de_peche_1, data = selectivite_crabe) # Si p >= 0.05 : non-significatif
+wilcox.test(taille_de_crabe ~ premier_engin_sortie_de_peche_1, data = selectivite_crabe |> filter(sexe_du_crabe == "Femelle")) # Si p >= 0.05 : non-significatif
 tapply(selectivite_crabe$taille_de_crabe, selectivite_crabe$premier_engin_sortie_de_peche_1, mean)
+#### Test t de Student
+t.test(taille_de_crabe ~ premier_engin_sortie_de_peche_1, data = selectivite_crabe |> filter(sexe_du_crabe == "Femelle"))
 
 ### Quelques representations graphiques
 hist(selectivite_crabe$taille_de_crabe, breaks = 20)
@@ -63,10 +65,13 @@ ggplot() + geom_histogram(data = selectivite_crabe |> filter(!is.na(taille_de_cr
   facet_wrap(~ sexe_du_crabe) + theme_minimal() +
   labs(x = "Taille (mm)", y = "Nombre de crabes", title = "Distribution de la taille des crabes selon l'engin et le sexe") + 
   scale_fill_manual(name = "", labels = c("Temoin", "Experimental"), values = c("#0072B2", "#E69F00")) + 
-  scale_x_continuous(breaks = seq(0, 200, by = 20)) + theme(axis.title = element_text(size = 10, face = "bold"),
-                                                            plot.title = element_text(size = 11, face = "bold", hjust = 0.5),
-                                                            legend.text = element_text(size = 10, face = "bold"),
+  scale_x_continuous(breaks = seq(0, 200, by = 20)) + theme(axis.title = element_text(size = 11, face = "bold"),
+                                                            plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+                                                            strip.text = element_text(size = 11, face = "bold"),
+                                                            legend.text = element_text(size = 11, face = "bold"),
                                                             legend.position = "bottom")
+
+ggsave("outputs/treko/distribution_taille_temoin_exp_sexe.png", width = 15, height = 6)
 
 ggplot() + geom_histogram(data = selectivite_crabe |> filter(!is.na(taille_de_crabe), premier_engin_sortie_de_peche_1 == "Treko"), aes(x = taille_de_crabe), binwidth = 5, position = "dodge") + 
   geom_vline(xintercept = 110, linetype = "dashed", linewidth = 0.6) + facet_wrap(~ nom_pecheur) + theme_minimal() +
@@ -83,10 +88,3 @@ ggplot() + geom_histogram(data = selectivite_crabe |> filter(!is.na(taille_de_cr
                                                             plot.title = element_text(size = 11, face = "bold", hjust = 0.5),
                                                             legend.text = element_text(size = 10, face = "bold"),
                                                             legend.position = "bottom")
-
-
-# Diagnostic visuel pour connaitre le type de courbe
-rapport <- captures_matrix[,2]/captures_matrix[,1]
-# ok  <- captures_matrix[, 1] >= 0 # Toutes les classes
-ok  <- captures_matrix[, 1] >= 10
-plot(classe_taille_mid[ok], rapport[ok], type = "b", pch = 16, lty = 1, xlab = "Classe de taille", ylab = "Experimental/temoin")

@@ -51,9 +51,10 @@ rapport <- captures_eff_corrige[, -i_t]/captures_eff_corrige[, i_t] # Rapport ca
 ok  <- captures_matrix[, i_t] >= 10 # Classes avec plus de 10 obs.
 matplot(classe_taille_mid[ok], rapport[ok, ], type = "b", pch = 16, lty = 1, xlab = "Classe de taille", ylab = "Maille/temoin (corrige)")
 
+###############################################################################
 ### Modelisation SELECT avec le package 'TropFishR'
 library(TropFishR)
-## Modelisation forme en cloche, conjointe (toutes les maillages), courbes relatives à la maille ??
+## Modelisation forme en cloche, conjointe (toutes les maillages), courbes relatives, decalees par rapport au temoin
 
 # Liste des parametres (necessaires pour select_Millar())
 select_paramaters <- list(midLengths       = classe_taille_mid,
@@ -315,7 +316,7 @@ maillages <- c("Temoin", "55_mm", "65_mm", "75_mm")
 exp_m     <- c("55_mm", "65_mm", "75_mm")
 L50_0     <- c("55_mm" = logi_55_pfixe$L50, "65_mm" = logi_65_pfixe$L50, "75_mm" = logi_75_pfixe$L50) # Points de départ de l'optimisation
 B         <- 1000 # Nombre de tirages
-set.seed(1) # Ppour retrouver les mêmes résultats
+set.seed(1) # Pour retrouver les mêmes résultats
 
 ## Preparation des donnees et objets
 classes <- sort(unique(na.omit(captures_long_format$classe_taille_mid)))
@@ -365,16 +366,16 @@ courbes <- setNames(lapply(exp_m, function(m) matrix(NA_real_, B, length(grille)
 for (b in 1:B) {
   w <- tabulate(sample(nc, nc, replace = TRUE), nbins = nc)   # Tirage des calées avec remise : w[i] = nombre de fois où la calée i est tirée
   for (m in exp_m) {
-    pm <- w * P[, m]  # Poids : nombre de tirages (0 si la maille n'était pas dans la calée)
-    tab <- cbind(classes,     # Tableau de captures du tirage : chaque calée est comptée pm fois (matrice × vecteur : chaque ligne i est multipliée par pm[i])
+    pm <- w * P[, m] # Poids : nombre de tirages (0 si la maille n'était pas dans la calée)
+    tab <- cbind(classes, # Tableau de captures du tirage : chaque calée est comptée pm fois (matrice × vecteur : chaque ligne i est multipliée par pm[i])
                  colSums(Am[[m]] * pm), # Captures de la maille
                  colSums(Am[["Temoin"]] * pm)) # Captures du témoin
     f <- try(ajust_SELECT(tab, L50_0 = L50_0[m], p = 0.5), silent = TRUE) # Réajustement du modèle sur ce tirage (p fixé à 0,5)
     if (!inherits(f, "try-error") && isTRUE(f$converge) && # Stockage du résultat si plausible (sinon : NA, tirage écarté)
         all(is.finite(c(f$L50, f$SR))) && f$SR < 200 && f$L50 > min(classes) && f$L50 < max(classes)) {
-      L50[b, m] <- f$L50
-      SR[b, m]  <- f$SR
-      courbes[[m]][b, ] <- plogis(2 * log(3) * (grille - f$L50) / f$SR) # Courbe de rétention du tirage
+        L50[b, m] <- f$L50
+        SR[b, m]  <- f$SR
+        courbes[[m]][b, ] <- plogis(2 * log(3) * (grille - f$L50) / f$SR) # Courbe de rétention du tirage
     }
   }
   if (b %% 100 == 0) cat("tirage", b, "sur", B, "\n") # Suivi de l'avancement
