@@ -22,7 +22,7 @@ str(data_crabe)
 data_crabe$taille_de_crabe <- as.numeric(data_crabe$taille_de_crabe) # Mise au format numerique
 # Selection des donnees pertinentes
 selectivite_crabe <- data_crabe |> dplyr::filter(village == "Ampitsopitsoka") |>  # Zone d'etude
-                                   # dplyr::filter(!taille_de_crabe %in% c(46,47,49) & taille_de_crabe <= 100) |> # Filtre sur la taille du crabe : choix methodologique fort !
+                                   dplyr::filter(!taille_de_crabe %in% c(46,47,49) & taille_de_crabe <= 109) |> # Filtre sur la taille du crabe : choix methodologique fort !
                                    # dplyr::filter(taille_de_crabe <= 109) |> # Filtre sur la taille du crabe : choix methodologique fort !
                                    dplyr::select(-c(id_enquete, date_expedition, nombre_participant, poids_de_crabes_consommes, nombre_de_crabes_consommes, 
                                                                 poids_destination_collecte_1, prix_destination_collecte_1, poids_destination_collecte_2, prix_destination_collecte_2,

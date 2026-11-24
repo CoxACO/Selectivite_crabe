@@ -130,13 +130,16 @@ ggplot() + geom_histogram(data = data_treko_tem |> filter(!is.na(taille_de_crabe
 
 prop_sup110_treko_tem <- sum(data_treko_tem$taille_de_crabe >= 110)/length(data_treko_tem$taille_de_crabe)*100
 
+### Construction d'un tableau recapitulatif
+df <- data.frame("Village" = rep("Ampitsopitsoka", times = 5), 
+                 "Engin" = c("Balance traditionnelle", "Balance selective 65 mm","Treko traditionnel", "Treko experimental 71 mm", "Treko traditionnel"),
+                 "Periode" = c("Sept-Oct 2021-2024", "Sept 2026","Sept-Oct 2021-2025", "Sept-Oct 2026", "Sept-Oct 2026"),
+                 "Nombre de crabes" = c(nrow(data_ampitsopitsoka_balance_av_2025_sept_oct), nrow(data_ampitsopitsoka_balance_2026_sept_oct), nrow(data_ampitsopitsoka_treko_av_2026_sept_oct), nrow(data_treko_exp), nrow(data_treko_tem)),
+                 "Taille moyenne (mm)" = c(mean(data_ampitsopitsoka_balance_av_2025_sept_oct$taille_de_crabe, na.rm = TRUE), mean(data_ampitsopitsoka_balance_2026_sept_oct$taille_de_crabe, na.rm = TRUE),mean(data_ampitsopitsoka_treko_av_2026_sept_oct$taille_de_crabe, na.rm = TRUE), mean(data_treko_exp$taille_de_crabe, na.rm = TRUE), mean(data_treko_tem$taille_de_crabe, na.rm = TRUE)),
+                 "Proportion ≥ 110 mm (%)" = c(prop_sup110_balance_trad, prop_sup110_balance_selec, prop_sup110_treko_trad, prop_sup110_treko_exp, prop_sup110_treko_tem),
+                 check.names = FALSE) |> kableExtra::kable()
 
-df <- data.frame("Engin" = c("Balance traditionnelle", "Balance selective","Treko traditionnel", "Treko experimental", "Treko traditionnel"),
-           "Periode" = c("Sept-Oct 2021-2024", "Sept 2026","Sept-Oct 2021-2025", "Sept-Oct 2026", "Sept-Oct 2026"),
-           "Nombre de crabes" = c(nrow(data_ampitsopitsoka_balance_av_2025_sept_oct), nrow(data_ampitsopitsoka_balance_2026_sept_oct), nrow(data_ampitsopitsoka_treko_av_2026_sept_oct), nrow(data_treko_exp), nrow(data_treko_tem)),
-           "Taille moyenne (mm)" = c(mean(data_ampitsopitsoka_balance_av_2025_sept_oct$taille_de_crabe, na.rm = TRUE), mean(data_ampitsopitsoka_balance_2026_sept_oct$taille_de_crabe, na.rm = TRUE),mean(data_ampitsopitsoka_treko_av_2026_sept_oct$taille_de_crabe, na.rm = TRUE), mean(data_treko_exp$taille_de_crabe, na.rm = TRUE), mean(data_treko_tem$taille_de_crabe, na.rm = TRUE)),
-           "Proportion de plus de 110 mm" = c(prop_sup110_balance_trad, prop_sup110_balance_selec, prop_sup110_treko_trad, prop_sup110_treko_exp, prop_sup110_treko_tem))
-df
+df 
 
 # Test statistique Kolmogorov-Smirnov # Si p >= 0.05 : non-significatif
 ks.test(data_ampitsopitsoka_balance_av_2025_sept_oct$taille_de_crabe, data_ampitsopitsoka_treko_av_2026_sept_oct$taille_de_crabe)

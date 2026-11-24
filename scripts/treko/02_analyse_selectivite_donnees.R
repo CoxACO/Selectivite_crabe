@@ -115,7 +115,7 @@ list(L50 = L50,
      converge = fit$convergence == 0)}
 
 logi_pfixe <- ajust_SELECT(captures_matrix, L50_0 = 80, SR_0 = 25, p = 0.5)
-logi_pfixe_m <- ajust_SELECT(captures_matrix_m, L50_0 = 80, SR_0 = 19, p = 0.5)
+logi_pfixe_m <- ajust_SELECT(captures_matrix_m, L50_0 = 80, SR_0 = 20, p = 0.5)
 logi_pfixe_f <- ajust_SELECT(captures_matrix_f, L50_0 = 85, SR_0 = 30, p = 0.5)
 logi_pfixe$L50
 logi_pfixe_m$L50
